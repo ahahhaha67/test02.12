@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/ivankrivosapov/Desktop/aip02.12/output/main'
+relocations:     []
+...
