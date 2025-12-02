@@ -1,23 +1,34 @@
 #include <iostream>
-namespace top{
-struct p_t {
-    int x,y;
-};
 
-bool operator == (p_t a, p_t b);
-bool operator != (p_t a, p_t b);
+namespace top {
+    struct p_t {
+        int x, y;
+    };
 
-int main(){
+    struct f_t {
+        p_t aa, bb;  
+    };
+
+    bool operator==(p_t a, p_t b);
+    bool operator!=(p_t a, p_t b);
+
+    struct IDraw {
+        virtual p_t begin() const = 0;
+        virtual p_t next(p_t prev) const = 0;
+        virtual ~IDraw() = default;
+    };
+} 
+
+int main() {
     using namespace top;
     p_t a{1, 1}, b{1, 1};
-    std::cout << (a==b) << "\n";
+    std::cout << (a == b) << "\n";
 }
 
-bool top::operator == (p_t a, p_t b){
+bool top::operator==(p_t a, p_t b) {
     return a.x == b.x && a.y == b.y;
 }
-bool top::operator != (p_t a, p_t b){
-    return !(a==b);
-}
 
+bool top::operator!=(p_t a, p_t b) {
+    return !(a == b);
 }
