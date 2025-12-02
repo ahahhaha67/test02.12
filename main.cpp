@@ -31,6 +31,7 @@ namespace top {
         p_t d;
     };
 p_t* extend(const p_t* pts, size_t s, p_t fill);
+void extend(p_t** pts, size_t& s, p_t fill);
 void append(const IDraw* sh, p_t** ppts, size_t& s);
 f_t frame (const p_t * pts, size_t s);
 char * canvas(f_t fr, char fill);
@@ -73,16 +74,32 @@ int main() {
     return err;
 }
 
+void top::extend(p_t** pts, size_t& s, p_t fill){
+    p_t* r = extend (*pts, s, fill);
+    delete [] *pts;
+    ++s;
+    *pts = r;
+}
+
 top::p_t* top::extend(const p_t* pts, size_t s, p_t fill){
     p_t* r = new p_t[s+1];
     for (size_t i = 0; i < s; ++i){
         r[i] = pts[i];
     }
     r[s] = fill;
+    return r;
 }
 
+
+
 void top::append(const IDraw* sh, p_t** ppts, size_t& s){
-    
+    extend(ppts, s, sh -> begin());
+    p_t b = sh -> begin();
+
+    while(sh -> next(b) != sh -> begin()){
+        b = sh -> next(b);
+        extend(ppts,s, b);
+    }
 }
 
 void top::paint(p_t p, char * cnv, f_t fr, char fill){
@@ -137,7 +154,7 @@ top::p_t top::Dot::next(p_t prev) const {
 }
 
 size_t top::rows (f_t fr){
-    return (fr.bb.y - fr.aa.x + 1);
+    return (fr.bb.y - fr.aa.y + 1);
 }
 
 size_t top::cols (f_t fr){
