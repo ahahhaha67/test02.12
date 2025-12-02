@@ -30,6 +30,18 @@ namespace top {
     private:
         p_t d;
     };
+
+    struct HorizontalLine : IDraw {
+        explicit HorizontalLine(p_t start, p_t end);
+        p_t begin() const override;
+        p_t next (p_t prev) const override;
+
+        private:
+        p_t a;
+        p_t b;
+        bool started;
+    }
+
 p_t* extend(const p_t* pts, size_t s, p_t fill);
 void extend(p_t** pts, size_t& s, p_t fill);
 void append(const IDraw* sh, p_t** ppts, size_t& s);
@@ -48,7 +60,7 @@ int main() {
     size_t s = 0;
     
     try {
-        shp[0] = new Dot({0, 0});
+        shp[0] = new HorizontalLine({1, 1}, {5, 1});
         shp[1] = new Dot({2, 4});
         shp[2] = new Dot ({-5, -2});
         for (size_t i = 0; i < 3; ++i){
@@ -74,6 +86,12 @@ int main() {
     return err;
 }
 
+top::HorizontalLine::HorizontalLine(p_t start, p_t end):a{start}, b{end}, started{false}{
+    if (start.y != end.y){
+        throw std::logic_error("HorizontalLine must have save y coordinate")
+    }
+}
+
 void top::extend(p_t** pts, size_t& s, p_t fill){
     p_t* r = extend (*pts, s, fill);
     delete [] *pts;
@@ -89,8 +107,6 @@ top::p_t* top::extend(const p_t* pts, size_t s, p_t fill){
     r[s] = fill;
     return r;
 }
-
-
 
 void top::append(const IDraw* sh, p_t** ppts, size_t& s){
     extend(ppts, s, sh -> begin());
