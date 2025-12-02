@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdexcept> 
+#include <stdexcept>
 
 namespace top {
     struct p_t {
@@ -32,25 +32,23 @@ namespace top {
     };
 
     struct HorizontalLine : IDraw {
-        explicit HorizontalLine(p_t start, p_t end);
+        HorizontalLine(p_t start, p_t end);
         p_t begin() const override;
-        p_t next (p_t prev) const override;
-
-        private:
+        p_t next(p_t prev) const override;
+        
+    private:
         p_t a;
         p_t b;
-        bool started;
-    }
+    };
 
-p_t* extend(const p_t* pts, size_t s, p_t fill);
-void extend(p_t** pts, size_t& s, p_t fill);
-void append(const IDraw* sh, p_t** ppts, size_t& s);
-f_t frame (const p_t * pts, size_t s);
-char * canvas(f_t fr, char fill);
-void paint(p_t p, char * cnv, f_t fr, char fill);
-void flush (std::ostream & os, const char* cnv, f_t fr);
+    p_t* extend(const p_t* pts, size_t s, p_t fill);
+    void extend(p_t** pts, size_t& s, p_t fill);
+    void append(const IDraw* sh, p_t** ppts, size_t& s);
+    f_t frame (const p_t * pts, size_t s);
+    char * canvas(f_t fr, char fill);
+    void paint(p_t p, char * cnv, f_t fr, char fill);
+    void flush (std::ostream & os, const char* cnv, f_t fr);
 } 
-
 
 int main() {
     using namespace top;
@@ -60,7 +58,7 @@ int main() {
     size_t s = 0;
     
     try {
-        shp[0] = new HorizontalLine({1, 1}, {5, 1});
+        shp[0] = new HorizontalLine({-5, 2}, {2, 2});
         shp[1] = new Dot({2, 4});
         shp[2] = new Dot ({-5, -2});
         for (size_t i = 0; i < 3; ++i){
@@ -74,8 +72,8 @@ int main() {
         flush (std::cout, cnv, fr);
         delete[] cnv;
 
-    } catch (...) {
-        std::cerr << "Error\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << "\n";
         err = 1;
     }
 
@@ -83,13 +81,39 @@ int main() {
     delete shp[1];
     delete shp[0];
     
+    delete[] pts;
+    
     return err;
 }
 
-top::HorizontalLine::HorizontalLine(p_t start, p_t end):a{start}, b{end}, started{false}{
-    if (start.y != end.y){
-        throw std::logic_error("HorizontalLine must have save y coordinate")
+top::HorizontalLine::HorizontalLine(p_t start, p_t end) : a{start}, b{end}
+{
+    if (start.y != end.y) {
+        throw std::logic_error("HorizontalLine must have same y coordinate");
     }
+}
+
+top::p_t top::HorizontalLine::begin() const {
+    return a;
+}
+
+top::p_t top::HorizontalLine::next(p_t prev) const {
+    if (prev == b) {
+        return a;
+    }
+    
+    p_t next_pt = prev;
+    
+    if (prev.x < b.x) {
+        next_pt.x = prev.x + 1;
+    } 
+    else if (prev.x > b.x) {
+        next_pt.x = prev.x - 1;
+    }
+    
+    next_pt.y = a.y;
+    
+    return next_pt;
 }
 
 void top::extend(p_t** pts, size_t& s, p_t fill){
