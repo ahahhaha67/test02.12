@@ -72,6 +72,15 @@ int main() {
     return err;
 }
 
+void top::flush(std::ostream& os, const char* cnv, f_t fr){
+    for (size_t i=0; i < rows(fr); ++i){
+        for (size_t j=0; j < cols(fr); ++j){
+            os << cnv[i * cols(fr) + j];
+        }
+        os << "\n";
+    }
+}
+
 char * top::canvas(f_t fr, char fill){
     size_t s = rows(fr) * cols(fr);
     char * c = new char[rows(fr) * cols (fr)];
