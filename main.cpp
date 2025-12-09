@@ -201,6 +201,20 @@ f_t frame(const p_t* pts, size_t s){
     return f_t{ {minx, miny}, {maxx, maxy} };
 }
 
+top::Rect::Rect(p_t pos, int w, int h):
+    IDraw(),
+    rect{pos, {pos.x + w, pos.y + h}}
+    {
+        if (!(w > 0 && h > 0)){
+            throw std::logic_error("bad rect");
+        }
+    }
+
+top::Rect::Rect(p_t a, p_t b):
+    Rect(a, b.x - a.x, b.y - a.y);
+    {}
+
+
 Dot::Dot(p_t dd) : d{dd} {}
 p_t Dot::begin() const { return d; }
 
