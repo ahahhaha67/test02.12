@@ -39,6 +39,14 @@ namespace top {
         p_t b;
     };
 
+    struct Rect : IDraw{
+        Rect(p_t pos, int w, int h);
+        Rect (p_t a, p_t b);
+        p_t begin () const override;
+        p_t next (p_t prev) const override;
+        f_t rect;
+    }
+
     struct Square : IDraw {
         Square(p_t lt, int sd) : lt{lt}, sd{sd} {
             if (sd <= 0) throw std::logic_error("Square side must be positive");
